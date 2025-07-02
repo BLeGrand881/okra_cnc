@@ -16,12 +16,18 @@ def extract_serial_number(symlink_path):
 
 class cnc:
     def __init__(self, x_symlink = None, y_symlink = None, z_symlink = None):
-        #create tic objects
+
+        #create list of serial numbers
         if not (x_symlink and y_symlink and z_symlink):
             serial_nums = self.tic_x.list_connected_device_serial_numbers()
         else:
-            serial_nums = [extract_serial_number(x_symlink), extract_serial_number(y_symlink), extract_serial_number(z_symlink)]
+            serial_nums = [
+                extract_serial_number(x_symlink),
+                extract_serial_number(y_symlink), 
+                extract_serial_number(z_symlink)
+            ]
         
+        #create tic objects
         self.tic_x = pytic.Tic()
         self.tic_y = pytic.Tic()
         self.tic_z = pytic.Tic()
@@ -64,4 +70,31 @@ class cnc:
     def set_z_velocity(self, z_velocity):
         self.tic_z.set_target_velocity(z_velocity)
 
-class pid
+class pd:
+    def __init__(self, cnc, kp=0, kd=0, center = (0,0,0), has_z_axis = False):
+        self.kp = kp
+        self.kd = kd
+        self.cnc = cnc
+        self.previous_errors = (0,0,0)
+
+        if not has_z_axis:
+            self.center = (center[0], center[1], 0)
+        else:
+            self.center = center
+
+    def update(self, measurements, dt=0.00033):
+        errors = (c - m for c,m in zip(self.center, measurements))
+        
+        px, py, pz = (e*self.kp for e in errors)
+        
+        derivatives = ((e - self.previous_error) / dt for e in errors)
+        dx, dy, dz = (d*self.kd for d in derivatives)
+
+        self.cnc.set_x_velocity(px + dx)
+        self.cnc.set_y_velocity(py + dy)
+        self.cnc.set_z_velocity(pz + dz)
+        
+        self.previous_errors = errors
+
+
+        
