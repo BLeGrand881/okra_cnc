@@ -54,3 +54,18 @@ class pd:
         self.axis.set_velocity(p + d)
 
         self.previous_error = error        
+
+class okra_tracker:
+    def __init__(self, x_symlink, y_symlink, kp_x, kd_x, kp_y, kd_y, center_x, center_y):
+        self.x_axis = axis(x_symlink)
+        self.y_axis = axis(y_symlink)
+
+        self.pd_x = pd(self.x_axis, kp_x, kd_x)
+        self.pd_y = pd(self.y_axis, kp_y, kd_y)
+
+        self.center_x = center_x
+        self.center_y = center_y
+
+    def update(self):
+        self.pd_x.update(self.center_x - #okra x position)
+        self.pd_y.update(self.center_y - #okra y position)
