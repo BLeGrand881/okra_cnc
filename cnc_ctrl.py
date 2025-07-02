@@ -42,3 +42,9 @@ class cnc:
 
     def set_x_velocity(self, x_velocity):
         self.tic_x.set_target_velocity(x_velocity)
+
+    def set_y_velocity(self, y_velocity):
+        self.tic_y.set_target_velocity(y_velocity)  
+    
+    def set_z_velocity(self, z_velocity):
+        self.tic_z.set_target_velocity(z_velocity)
