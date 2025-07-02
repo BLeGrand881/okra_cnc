@@ -1,15 +1,30 @@
 import pytic 
-from time import sleep
+from subprocess import run
+from os import path
+
+def extract_serial_number(symlink_path):
+    device_path = path.realpath(symlink_path)
+
+    result = run(['udevadm', 'info', '--query=all', '--name={}'.format(device_path)], capture_output=True, text=True)
+
+    for line in result.stdout.split('\n'):
+        if 'ID_SERIAL_SHORT=' in line:
+            serial_number = line.split('=')[1]
+            return serial_number
+        
+    print(f"Serial number not found for {symlink_path}")
 
 class cnc:
-    def __init__(self):
+    def __init__(self, x_symlink = None, y_symlink = None, z_symlink = None):
         #create tic objects
+        if not (x_symlink and y_symlink and z_symlink):
+            serial_nums = self.tic_x.list_connected_device_serial_numbers()
+        else:
+            serial_nums = [extract_serial_number(x_symlink), extract_serial_number(y_symlink), extract_serial_number(z_symlink)]
+        
         self.tic_x = pytic.Tic()
         self.tic_y = pytic.Tic()
         self.tic_z = pytic.Tic()
-        
-        #list connected devices
-        serial_nums = self.tic_x.list_connected_device_serial_numbers()
 
         #connect to tics
         self.tic_x.connect_to_serial_number(serial_nums[0])
@@ -48,3 +63,5 @@ class cnc:
     
     def set_z_velocity(self, z_velocity):
         self.tic_z.set_target_velocity(z_velocity)
+
+class pid
