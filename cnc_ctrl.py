@@ -63,6 +63,6 @@ class Okra_tracker:
         self.pd_x = Pd(self.x_axis, kps[0], kds[0])
         self.pd_y = Pd(self.y_axis, kps[1], kds[1])
 
-    def update_error(self):
-        self.pd_x.update_velocity(#error x)
-        self.pd_y.update_velocity(#error y)
+    def update_error(self, errors):
+        self.pd_x.update_velocity(errors[0])
+        self.pd_y.update_velocity(errors[1])
