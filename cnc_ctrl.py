@@ -14,7 +14,7 @@ def extract_serial_number(symlink_path):
         
     print(f"Serial number not found for {symlink_path}")
 
-class axis:
+class Axis:
     def __init__(self, symlink = None):
         #create tic object
         self.tic = pytic.Tic()
@@ -39,14 +39,14 @@ class axis:
     def set_velocity(self, velocity):
         self.tic.set_target_velocity(velocity)
 
-class pd:
+class Pd:
     def __init__(self, axis, kp=0, kd=0):
         self.kp = kp
         self.kd = kd
         self.axis = axis
         self.previous_error = 0
 
-    def update(self, error):
+    def update_velocity(self, error):
         p = error*self.kp
         
         d= (error-self.previous_error)*self.kd
@@ -55,16 +55,14 @@ class pd:
 
         self.previous_error = error        
 
-class okra_tracker:
-    def __init__(self, symlinks, kps, kds, center):
-        self.x_axis = axis(symlinks[0])
-        self.y_axis = axis(symlinks[1])
+class Okra_tracker:
+    def __init__(self, symlinks, kps, kds):
+        self.x_axis = Axis(symlinks[0])
+        self.y_axis = Axis(symlinks[1])
 
-        self.pd_x = pd(self.x_axis, kps[0], kds[0])
-        self.pd_y = pd(self.y_axis, kps[1], kds[1])
+        self.pd_x = Pd(self.x_axis, kps[0], kds[0])
+        self.pd_y = Pd(self.y_axis, kps[1], kds[1])
 
-        self.center = center
-
-    def update(self):
-        self.pd_x.update(self.center[0] - #okra x position)
-        self.pd_y.update(self.center[1] - #okra y position)
+    def update_error(self):
+        self.pd_x.update_velocity(#error x)
+        self.pd_y.update_velocity(#error y)
