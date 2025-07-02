@@ -56,16 +56,15 @@ class pd:
         self.previous_error = error        
 
 class okra_tracker:
-    def __init__(self, x_symlink, y_symlink, kp_x, kd_x, kp_y, kd_y, center_x, center_y):
-        self.x_axis = axis(x_symlink)
-        self.y_axis = axis(y_symlink)
+    def __init__(self, symlinks, kps, kds, center):
+        self.x_axis = axis(symlinks[0])
+        self.y_axis = axis(symlinks[1])
 
-        self.pd_x = pd(self.x_axis, kp_x, kd_x)
-        self.pd_y = pd(self.y_axis, kp_y, kd_y)
+        self.pd_x = pd(self.x_axis, kps[0], kds[0])
+        self.pd_y = pd(self.y_axis, kps[1], kds[1])
 
-        self.center_x = center_x
-        self.center_y = center_y
+        self.center = center
 
     def update(self):
-        self.pd_x.update(self.center_x - #okra x position)
-        self.pd_y.update(self.center_y - #okra y position)
+        self.pd_x.update(self.center[0] - #okra x position)
+        self.pd_y.update(self.center[1] - #okra y position)
