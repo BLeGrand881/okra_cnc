@@ -47,7 +47,6 @@ class pd:
         self.previous_error = 0
 
     def update(self, error):
-        
         p = error*self.kp
         
         d= (error-self.previous_error)*self.kd
